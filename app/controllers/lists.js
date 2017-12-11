@@ -33,7 +33,7 @@ const createList = (req, res) => {
 const deleteList = (req, res) => {
   req.list.destroy()
   .then(() => {
-    res.status(202).send({
+    res.status(200).send({
       info: 'List successfully destroyed'
     })
   })
