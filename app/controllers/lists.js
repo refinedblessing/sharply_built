@@ -14,26 +14,7 @@ const getLists = (req, res) => {
 }
 
 const getList = (req, res) => {
-  if (!parseInt(req.params.id, 10)) {
-    res.send({
-      err: 'List not available'
-    })
-  }
-
-  List.find({
-      id: req.params.id,
-      include: [{ model: Task, as: 'Items' }]
-    })
-    .then(list => {
-      if(list)
-        res.json(list);
-      res.send({
-        info: 'List not available'
-      })
-    })
-    .catch(err => {
-      res.status(500).send({err});
-    });
+  res.json(req.list);
 }
 
 const createList = (req, res) => {
@@ -50,17 +31,7 @@ const createList = (req, res) => {
 }
 
 const deleteList = (req, res) => {
-  if (!parseInt(req.params.id, 10)) {
-    res.send({
-      err: 'List not available'
-    })
-  }
-
-  List.destroy({
-    where: {
-      id: req.params.id
-    }
-  })
+  req.list.destroy()
   .then(() => {
     res.status(202).send({
       info: 'List successfully destroyed'
@@ -70,26 +41,14 @@ const deleteList = (req, res) => {
     res.status(500).send({err: err.toString()});
   });
 }
-const updateList = (req, res) => {
-  if (!parseInt(req.params.id, 10)) {
-    res.send({
-      err: 'List not available'
-    })
-  }
 
-  List.find({
-    id: req.params.id,
-    include: [{ model: Task, as: 'Items' }]
-  })
+const updateList = (req, res) => {
+  req.list
+    .update({
+      title: req.body.title
+    })
     .then((list) => {
-      if (list) {
-        list.update({
-            title: req.params.title
-          })
-          .then((list) => {
-            res.status(200).send(list)
-          })
-      }
+      res.status(200).send(list)
     })
     .catch(err => {
       res.status(500).send({err});
